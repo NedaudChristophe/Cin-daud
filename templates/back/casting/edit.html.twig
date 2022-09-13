@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Casting{% endblock %}
+
+{% block body %}
+<div class="container pt-5">
+
+    <div class="row mb-2">
+
+        <div class="col">
+
+            <h1>Editer Rôle</h1>
+                <a class="btn btn-primary my-3" href="{{ path('app_back_casting_index') }}">Retour à la liste</a>
+                {{ include('back/casting/_form.html.twig', {'button_label': 'Update'}) }}
+
+                
+
+                {{ include('back/casting/_delete_form.html.twig') }}
+
+       
+
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Index des films{% endblock %}
+
+{% block body %}
+
+<div class="container pt-5">
+
+    <div class="row mb-2">
+
+        <div class="col"> 
+   
+            <h1 class="text-center my-5">Movie index</h1>
+
+                <a class="btn btn-primary" href="{{ path('app_back_movie_new') }}">Ajouter un nouveau film/série</a>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Titre</th>
+                                <th>Type</th>
+                                <th>Date de sortie</th>
+                                <th>Durée</th>
+                                <th>Sommaire</th>
+                                {#<th>Résumé</th>#}
+                                <th>Images</th>
+                                <th>Note</th>
+                                <th>actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for movie in movies %}
+                            <tr>
+                                <td>{{ movie.id }}</td>
+                                <td>{{ movie.title }}</td>
+                                <td>{{ movie.type }}</td>
+                                <td>{{ movie.releaseDate ? movie.releaseDate|date('Y-m-d') : '' }}</td>
+                                <td>{{ movie.duration }}</td>
+                                <td>{{ movie.summary }}</td>
+                                {#<td>{{ movie.synopsis }}</td>#}
+                                <td><img src="{{ movie.poster }}" alt="image"/></td>
+                                <td>{{ movie.rating }}</td>
+                                <td>
+                                    <a class="btn btn-sm btn-primary" style="width:100px" href="{{ path('app_back_movie_show', {'id': movie.id}) }}">Voir</a>
+                                    <a class="btn btn-sm btn-warning mt-2 " style="width:100px"  href="{{ path('app_back_movie_edit', {'id': movie.id}) }}">Editer</a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="10">Pas de film trouvé</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+        </div>
+    </div>
+</div>
+        
+    
+{% endblock %}        
+                        
+                        

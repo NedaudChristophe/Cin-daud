@@ -1,0 +1,11 @@
+<div class="container pt-5">
+
+    <div class="row mb-2">
+
+        <div class="col">
+
+
+          {{ form_start(form) }}
+           {{ form_widget(form) }}
+             <button class="btn btn-success mb-2">{{ button_label|default('Save') }}</button>
+          {{ form_end(form) }}

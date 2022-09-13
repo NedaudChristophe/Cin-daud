@@ -1,0 +1,73 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+    # !toutes les valeurs de paramètre seront des chaines de caractères
+    # paramétrage de mon service OMDBAPI
+    # app.omdbapi.key: "a93b767b"
+    app.omdbapi.key: '%env(resolve:OMDBAPI_KEY)%'
+   
+    # myslugger.lower: true
+    myslugger.lower: '%env(resolve:MYSLUGGER_LOWER)%'
+    # https://symfony.com/doc/current/configuration/env_var_processors.html#built-in-environment-variable-processors
+    # pour activer la lecture en booléen du fichier .env
+    # ce qui change la type de paramètre : chaine -> bool
+    # ! attention a notre service qui ne va plus fonctionner
+    # myslugger.lower: '%env(bool:MYSLUGGER_LOWER)%'
+    
+    le.param.de.yoann: tagada
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+    #Cocur\Slugify\Slugify: ~
+
+    # je donne le FQCN de mon service
+    App\Services\MySlugger:
+        # je lui dis qu'il y a des arguments au constructeur de mon service
+        # autre que l'injection de dépendance
+        arguments:
+            # je lui dis le nom de l'argument et la valeur à lui donner
+            $lower: '%env(resolve:MYSLUGGER_LOWER)%'
+
+    # paramétrage du MovieListener dans l'objectif de slugiffier le titre à chaque update
+    App\EventListener\MovieListener:
+        tags:
+            -
+                name: 'doctrine.orm.entity_listener'
+                event: 'preUpdate'
+                entity: 'App\Entity\Movie'
+                # these are other options that you may define if needed
+
+                # set the 'lazy' option to TRUE to only instantiate listeners when they are used
+                # lazy: true
+
+                # set the 'entity_manager' option if the listener is not associated to the default manager
+                # entity_manager: 'custom'
+
+                # by default, Symfony looks for a method called after the event (e.g. preUpdate())
+                # if it doesn't exist, it tries to execute the '__invoke()' method, but you can
+                # configure a custom method name with the 'method' option
+                method: 'generateSlug'
+            -
+                name: 'doctrine.orm.entity_listener'
+                event: 'prePersist'
+                entity: 'App\Entity\Movie'
+                method: 'generateSlug' # ici je donne le nom de la méthode     

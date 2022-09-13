@@ -1,0 +1,58 @@
+{% extends "base.html.twig" %}
+
+{% block title %} - Liste{% endblock %}
+
+{% block body %}
+    <h1 class="text-center my-5">{{ genre.name }}</h1>
+    <div class="container-xl bg-light p-5 border-top">
+
+        <div class="row mb-2">
+
+            {% include "front/partials/nav_genres.html.twig" %}
+
+            <div class="col-12 col-lg-9">
+
+                <h2 class="text-muted fw-bold mb-4">Les films et séries/Résultats de recherche</h2>
+
+                {% for movie in movielist %}
+                <div class="row g-0 border rounded overflow-hidden flex-md-row align-items-start mb-4 shadow-sm position-relative">
+                    <div class="col-4 movie__poster img-thumbnail"
+                        style="background-image: url({{movie.poster}});">
+                        <img src="{{asset('images/poster-placeholder.png')}}" class="img-fluid">
+                        <!-- img src="https://m.media-amazon.com/images/M/MV5BNThmZGY4NzgtMTM4OC00NzNkLWEwNmEtMjdhMGY5YTc1NDE4XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg" class="img-fluid" -->
+                    </div>
+
+                    <div class="col-8 p-4 d-flex flex-column position-static bg-light">
+                        <a href="" class="movie__favorite fs-1 my-2 mx-3 link-danger"><i class="bi bi-bookmark-plus"></i></a>
+                        <strong class="d-inline-block mb-2 text-primary">
+                        {{movie.type}}
+                        </strong>
+                        <h3 class="mb-1">
+                        {{movie.title}}
+                        </h3>
+                        <div class="mb-1 text-muted">{{movie.duration}} min</div>
+                        
+                        <p>{{movie.summary}}
+                        </p>
+                        <p>{{movie.synopsis}}
+                        </p>
+
+                        {% include "front/partials/rating_movie.html.twig" %}
+                    </div>
+                    
+                </div>
+                {% else %}
+
+                    <em>Maurice a volé les films</em>
+            {% endfor %}
+            </div>
+
+
+
+                
+
+        </div>
+
+    </div>
+
+{% endblock %}

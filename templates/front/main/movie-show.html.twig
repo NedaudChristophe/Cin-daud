@@ -1,0 +1,154 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+    {{movie.title}}
+{% endblock %}
+
+
+{% block body %}
+
+    <div class="container bg-light pt-5">
+
+        <div class="row mb-2">
+
+            <div class="col">
+
+                <div class="row g-0 border rounded overflow-hidden flex-md-row align-items-start mb-4 shadow-sm position-relative">
+                    <div class="col-4 movie__poster img-thumbnail"
+                        style="background-image: url({{movie.poster}});">
+                        <img src="{{asset('images/poster-placeholder.png')}}" class="img-fluid">
+                        <!-- img src="https://m.media-amazon.com/images/M/MV5BNThmZGY4NzgtMTM4OC00NzNkLWEwNmEtMjdhMGY5YTc1NDE4XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg" class="img-fluid" -->
+                    </div>
+
+                    <div class="col-8 p-4 d-flex flex-column position-static bg-light">
+                        <a href="" class="movie__favorite fs-1 my-2 mx-3 link-danger"><i class="bi bi-bookmark-plus"></i></a>
+                        <strong class="d-inline-block mb-2 text-primary">
+                        {{movie.type}}
+                        </strong>
+                        <h3 class="mb-1">
+                        {{movie.title}}
+                        </h3>
+                        <div class="mb-1 text-muted">{{movie.duration}} min</div>
+                        <p>
+
+                        {# Ici on peut aller chercher les genres associés au film courant avec la méthode getGenres() de l'entité Movie #}
+                        {% for genre in movie.genre %}
+                            <span class="badge bg-warning text-dark">{{ genre.name }}</span>
+                        {% endfor %}
+
+                        </p>
+                        <p>{{movie.summary}}
+                        </p>
+                        <p>{{movie.synopsis}}
+                        </p>
+
+                        {% include "front/partials/rating_movie.html.twig" %}
+
+                        {# Partie que pour les séries #}
+                        {% if movie.type == 'série' %}
+                            <h2>{{ movie.seasons|length }} Saisons</h2>
+                            <ul class="list-unstyled">
+                                {% for season in movie.seasons %}
+                                    <li>
+                                        <span class="badge bg-danger fs-6 mb-2">
+                                            Saison {{season.number}}
+                                        </span>
+                                        <small class="ms-1">({{ season.episodeNumber }} épisodes)</small>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+
+                        
+                        <dl class="row">
+
+                            {# Les acteurs #}
+                            <dt class="col-sm-12">Avec</dt>
+                            <dd class="col-sm-12">
+                                {% for casting in movie.castings %}
+
+                                    {{casting.person.firstname}} 
+                                    {{casting.person.lastname}}
+                                    ({{casting.role}})<br>
+                                
+                                {% endfor %}
+                            </dd>
+
+                            <dt class="col-sm-12">Pays</dt>
+                            <dd class="col-sm-12">USA</dd>
+                            <dt class="col-sm-12">Année</dt>
+                            <dd class="col-sm-12">{{ movie.releaseDate|date("m/d/Y", "Europe/Paris") }}</dd>
+                         </dl>    
+                        
+                        <h2>Critiques</h2>
+
+                            {# Bouton qui renvoie vers le formulaire d'ajout de review avec comme paramètre, l'id du film correspondant #}
+                            <p>
+                                {% if is_granted('ROLE_USER') %}
+                                    <a class="btn btn-sm btn-primary" href="{{ path('app_review-add', {id: movie.id}) }}">Ajouter une critique</a> 
+                                
+                                {% else %}
+                                    <a class="btn btn-sm btn-primary" href="{{ path('app_login') }}">
+                                        Veuillez vous identifier pour ajouter une critique
+                                    </a>
+                                {% endif %}
+                            </p>  
+                            
+                          {#  {% for review in movie.reviews %}
+                                    <span class="badge bg-warning text-dark">{{ review.rating }}</span>
+                                    <span class="badge bg-warning text-dark">{{ review.username }}</span>
+                                <p>{{ review.content }}</p>
+                                    {% for reaction in review.reactions %}
+                            <span class="badge bg-warning text-dark">le Film fait {{ reaction }}</span>
+                            {% endfor %}  
+                            {% endfor %}#}
+                            
+                            <div class="accordion" id="accordionReviews">
+                            {% for review in movie.reviews %}
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="heading-{{review.id}}">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{review.id}}" aria-expanded="false" aria-controls="collapse-{{review.id}}">
+                                        Critique de {{review.username}} 
+                                    </button>
+                                </h2>
+                                <div id="collapse-{{review.id}}" class="accordion-collapse collapse" aria-labelledby="heading-{{review.id}}" data-bs-parent="#accordionReviews">
+                                    <div class="accordion-body">
+                                        <p><em>visionné le {{review.watchedAt|date('d/m/Y')}} <br>
+                                             Note:
+                                            {% for i in 1..5 %}
+                                                {% if review.rating > i or review.rating == i %}
+                                                    <i class="bi bi-star-fill"></i>
+                                                {% else %}
+                                                    {% if review.rating - i < 0 and review.rating - i > -1 %}
+                                                        <i class="bi bi-star-half"></i>
+                                                    {% else %}
+                                                        <i class="bi bi-star"></i>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                            {{ review.rating }} </em></p>
+                                                <p>{{review.content}}</p>
+                                            {% for reaction in review.reactions %}
+                                                <span class="badge bg-warning text-dark">le Film fait {{ reaction }}</span>
+                                            {% endfor %}  
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>   
+                           
+                        
+                       
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+{% endblock %}
+
+
+                    

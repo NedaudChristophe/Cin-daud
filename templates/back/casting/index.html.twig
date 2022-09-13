@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Casting index{% endblock %}
+
+{% block body %}
+    
+<div class="container pt-5">
+
+    <div class="row mb-2">
+
+        <div class="col"> 
+
+            <h1 class="text-center">Casting index</h1>
+        <a class="btn btn-primary" href="{{ path('app_back_casting_new') }}">Ajouter un Rôle</a>     
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Role</th>
+                            <th>Acteur/Actrice</th>
+                            <th>Film/série</th>   
+                            <th>CreditOrder</th>
+                            <th>actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for casting in castings %}
+
+                        <tr>
+                            <td>{{ casting.id }}</td>
+                            <td>{{ casting.role }}</td>
+                            <td>{{ casting.person.firstname }} {{ casting.person.lastname }}</td>
+                            <td>{{ casting.movie.title }}</td>
+                        
+                            <td>{{ casting.creditOrder }}</td>
+                            <td>
+                                <a class="btn btn-sm btn-primary my-2" style="width:80px" href="{{ path('app_back_casting_show', {'id': casting.id}) }}">show</a>
+                                <a class="btn btn-sm btn-warning" style="width:80px" href="{{ path('app_back_casting_edit', {'id': casting.id}) }}">edit</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4">no records found</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                
+        </div>
+    </div>
+</div>         
+{% endblock %}
